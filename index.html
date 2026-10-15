@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Celestial Tale of Two Years</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=MedievalSharp&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background: #050a18;
+            color: #e0e8f5;
+            font-family: 'Cinzel', serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Dynamic Background Layer */
+        #bg-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.25;
+            transition: background-image 1s ease-in-out, opacity 1s ease-in-out;
+            z-index: 0;
+        }
+
+        /* Ambient Stars Background */
+        .stars {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background: radial-gradient(2px 2px at 20px 30px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 40px 70px, #a3c4f3, rgba(0,0,0,0)),
+                        radial-gradient(1px 1px at 90px 40px, #ffffff, rgba(0,0,0,0)),
+                        radial-gradient(2px 2px at 160px 120px, #8eecf5, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            opacity: 0.5;
+            z-index: 1;
+        }
+
+        .cursor-sparkle {
+            position: fixed;
+            pointer-events: none;
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #d4af37;
+            box-shadow: 0 0 8px #8eecf5, 0 0 12px #d4af37;
+            z-index: 9999;
+            animation: fadeSparkle 0.8s linear forwards;
+        }
+
+        @keyframes fadeSparkle {
+            0% { opacity: 1; transform: scale(1) translateY(0); }
+            100% { opacity: 0; transform: scale(0.2) translateY(15px); }
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 15px;
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        h1 {
+            font-family: 'MedievalSharp', cursive;
+            font-size: 2.8rem;
+            color: #d4af37;
+            text-shadow: 0 0 12px rgba(212, 175, 55, 0.6);
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            font-style: italic;
+            color: #a3c4f3;
+            margin-bottom: 30px;
+        }
+
+        /* Photo Gallery */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .photo-frame {
+            background: rgba(11, 29, 58, 0.85);
+            border: 2px solid #3a6073;
+            border-radius: 8px;
+            padding: 10px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .photo-frame:hover { transform: translateY(-5px); border-color: #d4af37; }
+
+        .photo-frame img {
+            width: 100%; height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .photo-frame p { margin-top: 8px; font-size: 0.85rem; color: #cbd5e1; }
+
+        /* RPG Layout */
+        .rpg-section {
+            background: rgba(5, 10, 24, 0.92);
+            border: 3px double #d4af37;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 0 25px rgba(0, 0, 0, 0.9);
+            text-align: left;
+        }
+
+        .rpg-header {
+            text-align: center;
+            font-family: 'MedievalSharp', cursive;
+            color: #d4af37;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        .rpg-stats {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            background: rgba(17, 41, 82, 0.8);
+            border: 1px solid #d4af37;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #8eecf5;
+        }
+
+        /* Customization Box */
+        .customization-box {
+            background: rgba(17, 41, 82, 0.6);
+            border: 1px solid #3a6073;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .customization-box label {
+            display: block;
+            color: #d4af37;
+            margin-top: 12px;
+            font-size: 0.95rem;
+            margin-bottom: 5px;
+        }
+
+        .customization-box input, .customization-box select {
+            width: 100%;
+            padding: 10px;
+            background: #050a18;
+            border: 1px solid #d4af37;
+            color: #fff;
+            border-radius: 4px;
+            font-family: 'Cinzel', serif;
+        }
+
+        /* Avatar Selection Grid */
+        .avatar-options {
+            display: flex;
+            gap: 15px;
+            margin-top: 8px;
+        }
+
+        .avatar-option {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            border: 2px solid #3a6073;
+            object-fit: cover;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-option.selected {
+            border-color: #d4af37;
+            box-shadow: 0 0 12px #d4af37;
+            transform: scale(1.1);
+        }
+
+        /* Story Container with Dual Portraits */
+        .story-display {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 600px) {
+            .story-display { flex-direction: column; }
+        }
+
+        .portrait-box {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .portrait-box img {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 3px solid #d4af37;
+            object-fit: cover;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .portrait-box span {
+            font-size: 0.75rem;
+            color: #8eecf5;
+            text-align: center;
+        }
+
+        .rpg-box {
+            background: rgba(17, 41, 82, 0.7);
+            border: 1px solid #3a6073;
+            border-radius: 8px;
+            padding: 20px;
+            min-height: 150px;
+            font-size: 0.98rem;
+            line-height: 1.6;
+            color: #e0e8f5;
+            flex-grow: 1;
+        }
+
+        .rpg-choices { display: flex; flex-direction: column; gap: 10px; }
+
+        .rpg-btn {
+            background: linear-gradient(135deg, #112952, #1b3a6b);
+            color: #d4af37;
+            border: 1px solid #d4af37;
+            padding: 12px 18px;
+            font-family: 'Cinzel', serif;
+            font-size: 0.95rem;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .rpg-btn:hover {
+            background: #d4af37;
+            color: #050a18;
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.6);
+        }
+
+        #music-toggle-btn {
+            position: fixed;
+            top: 15px; right: 15px;
+            z-index: 100;
+            font-size: 0.8rem;
+            padding: 6px 12px;
+        }
+
+        /* Final Reveal Card */
+        .final-message {
+            display: none;
+            margin-top: 25px;
+            padding: 20px;
+            background: rgba(212, 175, 55, 0.1);
+            border: 2px solid #d4af37;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .love-letter-body {
+            text-align: left;
+            line-height: 1.8;
+            font-size: 1rem;
+            color: #f1f5f9;
+            background: rgba(5, 10, 24, 0.85);
+            padding: 20px;
+            border-radius: 6px;
+            border: 1px dashed #d4af37;
+        }
+
+        .signature {
+            margin-top: 20px;
+            font-family: 'MedievalSharp', cursive;
+            font-size: 1.3rem;
+            color: #d4af37;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Audio -->
+    <audio id="bg-music" loop preload="auto">
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf07a.mp3?filename=medieval-fantasy-112323.mp3" type="audio/mpeg">
+    </audio>
+
+    <button id="music-toggle-btn" class="rpg-btn" onclick="toggleAudio()">🎵 Enable Music</button>
+    
+    <div id="bg-overlay"></div>
+    <div class="stars"></div>
+
+    <div class="container">
+        <h1>Happy 2nd Anniversary</h1>
+        <p class="subtitle">"Two orbits under the stars, forever bound by love."</p>
+
+        <!-- Our Main Gallery -->
+        <div class="gallery-grid">
+            <div class="photo-frame">
+                <img src="photo1.jpg" alt="Memory 1" onerror="this.src='https://via.placeholder.com/400x300/112952/d4af37?text=Photo+1'">
+                <p>Year I: Where our story began...</p>
+            </div>
+            <div class="photo-frame">
+                <img src="photo2.jpg" alt="Memory 2" onerror="this.src='https://via.placeholder.com/400x300/112952/d4af37?text=Photo+2'">
+                <p>Through every realm and adventure.</p>
+            </div>
+            <div class="photo-frame">
+                <img src="photo3.jpg" alt="Memory 3" onerror="this.src='https://via.placeholder.com/400x300/112952/d4af37?text=Photo+3'">
+                <p>Year II: Forever under celestial skies.</p>
+            </div>
+        </div>
+
+        <!-- Interactive RPG Section -->
+        <div class="rpg-section">
+            <div class="rpg-header">⚔️ Realm of the Eternal Rose ⚔️</div>
+            
+            <!-- Dynamic Stats Bar -->
+            <div class="rpg-stats">
+                <span>👤 Hero: <strong id="stat-name">Hero</strong></span>
+                <span>⚔️ Class: <strong id="stat-class">Paladin</strong></span>
+                <span>❤️ HP: <strong id="stat-hp">100/100</strong></span>
+                <span>🎒 Items: <strong id="stat-inv">None</strong></span>
+            </div>
+
+            <!-- Character Creation Screen -->
+            <div id="custom-screen" class="customization-box">
+                <h3 style="color:#d4af37; text-align:center;">Customize Your Hero</h3>
+                
+                <label for="input-name">Lady / Hero Name:</label>
+                <input type="text" id="input-name" placeholder="Enter your name..." value="My Beloved">
+
+                <label>Choose Your Hero Avatar:</label>
+                <div class="avatar-options">
+                    <img src="photo4.jpg" class="avatar-option selected" onclick="selectAvatar(this, 'photo4.jpg')" onerror="this.src='https://via.placeholder.com/100/112952/d4af37?text=Photo+4'">
+                    <img src="photo5.jpg" class="avatar-option" onclick="selectAvatar(this, 'photo5.jpg')" onerror="this.src='https://via.placeholder.com/100/112952/d4af37?text=Photo+5'">
+                    <img src="photo6.jpg" class="avatar-option" onclick="selectAvatar(this, 'photo6.jpg')" onerror="this.src='https://via.placeholder.com/100/112952/d4af37?text=Photo+6'">
+                </div>
+
+                <label for="input-class">Choose Your Combat Class:</label>
+                <select id="input-class">
+                    <option value="Solar Paladin">Solar Paladin (+20 HP, Holy Defense)</option>
+                    <option value="Arcane Spellblade">Arcane Spellblade (Magic Mastery)</option>
+                    <option value="Celestial Ranger">Celestial Ranger (Agile & Swift)</option>
+                </select>
+
+                <label for="input-heirloom">Select Starting Heirloom:</label>
+                <select id="input-heirloom">
+                    <option value="Locket of Memories">Locket of Memories (Unlocks peaceful paths)</option>
+                    <option value="Sunsteel Ring">Sunsteel Ring (+15 Combat Power)</option>
+                </select>
+
+                <br><br>
+                <button class="rpg-btn" style="width: 100%; text-align: center;" onclick="startCustomQuest()">Embark On Quest ✨</button>
+            </div>
+
+            <!-- Active Story Area -->
+            <div class="story-display" id="story-display-box" style="display:none;">
+                <div class="portrait-box">
+                    <img id="hero-portrait" src="photo4.jpg" alt="Hero Avatar">
+                    <span id="hero-label">You</span>
+                </div>
+
+                <div class="rpg-box" id="story-text"></div>
+
+                <div class="portrait-box" id="entity-box" style="display:none;">
+                    <img id="entity-portrait" src="" alt="Entity Avatar">
+                    <span id="entity-label">NPC</span>
+                </div>
+            </div>
+
+            <div class="rpg-choices" id="choices-container"></div>
+
+            <!-- Final Love Decree -->
+            <div class="final-message" id="final-card">
+                <h2 style="font-family:'MedievalSharp'; color:#d4af37; margin-bottom:15px;">📜 Royal Decree of Love 📜</h2>
+                <div class="love-letter-body" id="dynamic-love-letter"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- AUDIO ---
+        const bgMusic = document.getElementById('bg-music');
+        const musicBtn = document.getElementById('music-toggle-btn');
+        let isPlaying = false;
+
+        function toggleAudio() {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicBtn.innerText = "🎵 Enable Music";
+                isPlaying = false;
+            } else {
+                bgMusic.play().then(() => {
+                    musicBtn.innerText = "🔇 Mute Music";
+                    isPlaying = true;
+                }).catch(() => {});
+            }
+        }
+
+        // --- SPARKLES ---
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.6) {
+                const sparkle = document.createElement('div');
+                sparkle.className = 'cursor-sparkle';
+                sparkle.style.left = e.clientX + 'px';
+                sparkle.style.top = e.clientY + 'px';
+                document.body.appendChild(sparkle);
+                setTimeout(() => sparkle.remove(), 800);
+            }
+        });
+
+        // --- GAME STATE ---
+        let state = {
+            name: 'Hero',
+            class: 'Paladin',
+            avatar: 'photo4.jpg',
+            hp: 100,
+            inventory: [],
+            endingType: 'peaceful'
+        };
+
+        function selectAvatar(element, imgSrc) {
+            document.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
+            element.classList.add('selected');
+            state.avatar = imgSrc;
+        }
+
+        function startCustomQuest() {
+            state.name = document.getElementById('input-name').value || 'My Beloved';
+            state.class = document.getElementById('input-class').value;
+            const heirloom = document.getElementById('input-heirloom').value;
+            
+            if (state.class === 'Solar Paladin') state.hp = 120;
+            state.inventory.push(heirloom);
+
+            document.getElementById('custom-screen').style.display = 'none';
+            document.getElementById('story-display-box').style.display = 'flex';
+            document.getElementById('hero-portrait').src = state.avatar;
+            document.getElementById('hero-label').innerText = state.name;
+
+            updateStats();
+            loadNode('start');
+        }
+
+        function updateStats() {
+            document.getElementById('stat-name').innerText = state.name;
+            document.getElementById('stat-class').innerText = state.class;
+            document.getElementById('stat-hp').innerText = `${state.hp}/100`;
+            document.getElementById('stat-inv').innerText = state.inventory.join(', ');
+        }
+
+        // --- SCENARIO DATA WITH ASSIGNED CUSTOM GUARDIAN/NPC IMAGES ---
+        const storyNodes = {
+            'start': {
+                bg: 'photo1.jpg',
+                entity: null,
+                text: () => `Welcome, mighty **${state.name}**! As a renowned **${state.class}**, thou hast journeyed to the realm of Astral to claim the **Eternal Starlight Rose**. Two diverging trails lie ahead under the moonlit sky.`,
+                choices: [
+                    { text: "🌲 Enter the Whispering Forest (Enchanted Path)", next: 'woods' },
+                    { text: "⛰️ Scale the Dragon Crags (Perilous Mountain)", next: 'crags' }
+                ]
+            },
+
+            'woods': {
+                bg: 'photo2.jpg',
+                entity: {
+                    src: 'photo7.jpg',
+                    name: 'Eldrin (Star-Weaver)'
+                },
+                text: () => `Deep in the glowing forest, **Eldrin the Star-Weaver** greets thee. 'Ah, ${state.name}! The Shadow Guardian ahead guards the vault. How wilt thou pass?'`,
+                choices: [
+                    { text: "✨ Use Locket of Memories to calm the Guardian", next: 'peaceful_win', req: 'Locket of Memories' },
+                    { text: "⚔️ Engage the Shadow Guardian in battle!", next: 'fight_guardian' }
+                ]
+            },
+
+            'crags': {
+                bg: 'photo3.jpg',
+                entity: {
+                    src: 'photo9.jpg',
+                    name: 'Phantom Dragon'
+                },
+                text: () => `A mighty **Phantom Dragon** lands with a loud roar! 'Foolish ${state.name}, dost thou think thy 2-year romance can conquer my flames?'`,
+                choices: [
+                    { text: "⚔️️ Battle the Dragon with thy weapons!", next: 'fight_dragon' },
+                    { text: "💖 Recite a poem of thy 2-year anniversary", next: 'peaceful_win' }
+                ]
+            },
+
+            'fight_guardian': {
+                bg: 'photo2.jpg',
+                entity: {
+                    src: 'photo8.jpg',
+                    name: 'Shadow Guardian'
+                },
+                text: () => {
+                    state.hp -= 20;
+                    state.endingType = 'guardian_combat';
+                    updateStats();
+                    return `Thy weapons clash against shadow! As a valiant **${state.class}**, thou vanquished the Shadow Guardian (-20 HP) and earned the Vault Key!`;
+                },
+                choices: [{ text: "🗝️ Advance to the Celestial Altar", next: 'altar' }]
+            },
+
+            'fight_dragon': {
+                bg: 'photo3.jpg',
+                entity: {
+                    src: 'photo9.jpg',
+                    name: 'Phantom Dragon'
+                },
+                text: () => {
+                    state.hp -= 25;
+                    state.endingType = 'dragon_combat';
+                    updateStats();
+                    return `Dragon fire illuminates the night! Through sheer strength, thou defeated the beast (-25 HP) and retrieved the Star Gem!`;
+                },
+                choices: [{ text: "💎 Advance to the Celestial Altar", next: 'altar' }]
+            },
+
+            'peaceful_win': {
+                bg: 'photo1.jpg',
+                entity: {
+                    src: 'photo10.jpg',
+                    name: 'Spirit Guardian'
+                },
+                text: () => {
+                    state.endingType = 'peaceful';
+                    return `Thy gentleness and love shine brighter than any blade. The guardian steps aside in awe, granting thee harmless passage!`;
+                },
+                choices: [{ text: "✨ Ascend to the Celestial Altar", next: 'altar' }]
+            },
+
+            'altar': {
+                bg: 'photo3.jpg',
+                entity: null,
+                text: () => `At the peak, the **Eternal Starlight Rose** blooms before thee. Thou hast completed the quest and proven thy eternal love, ${state.name}!`,
+                choices: [{ text: "👑 Claim the Rose and Read My Letter", next: 'finish' }]
+            }
+        };
+
+        function loadNode(key) {
+            if (key === 'finish') {
+                document.getElementById('story-text').innerHTML = "✨ <strong>Quest Accomplished!</strong> Thy personal Love Decree has been revealed below:";
+                document.getElementById('choices-container').style.display = 'none';
+                document.getElementById('entity-box').style.display = 'none';
+                generateCustomLetter();
+                document.getElementById('final-card').style.display = 'block';
+                return;
+            }
+
+            const node = storyNodes[key];
+
+            // Change background image dynamically
+            if (node.bg) {
+                const bgOverlay = document.getElementById('bg-overlay');
+                bgOverlay.style.backgroundImage = `url('${node.bg}')`;
+                bgOverlay.style.opacity = '0.35';
+            }
+
+            // Entity / NPC Portrait handling
+            const entityBox = document.getElementById('entity-box');
+            if (node.entity) {
+                const imgElem = document.getElementById('entity-portrait');
+                imgElem.src = node.entity.src;
+                imgElem.onerror = () => { imgElem.src = 'https://via.placeholder.com/100/112952/d4af37?text=NPC'; };
+                document.getElementById('entity-label').innerText = node.entity.name;
+                entityBox.style.display = 'flex';
+            } else {
+                entityBox.style.display = 'none';
+            }
+
+            document.getElementById('story-text').innerHTML = typeof node.text === 'function' ? node.text() : node.text;
+
+            const container = document.getElementById('choices-container');
+            container.innerHTML = '';
+
+            node.choices.forEach(choice => {
+                if (!choice.req || state.inventory.includes(choice.req)) {
+                    const btn = document.createElement('button');
+                    btn.className = 'rpg-btn';
+                    btn.innerText = choice.text;
+                    btn.onclick = () => loadNode(choice.next);
+                    container.appendChild(btn);
+                }
+            });
+        }
+
+        // GENERATE DIFFERENT LETTERS FOR EACH SCENARIO
+        function generateCustomLetter() {
+            const letterBox = document.getElementById('dynamic-love-letter');
+            let letterContent = "";
+
+            if (state.endingType === 'peaceful') {
+                letterContent = `
+                    <p>Dearest ${state.name},</p><br>
+                    <p>Thou hast chosen the path of wisdom, grace, and peace. Just like in this quest, thy gentleness and warmth have brought harmony into my life over these past two years. Thou didst not need a sword to claim victory—thy heart alone illuminates even the darkest woods.</p><br>
+                    <p>Thank thee for two beautiful years filled with quiet moments, shared smiles, and unwavering kindness. Walking beside thee is my life's greatest blessing.</p>
+                `;
+            } else if (state.endingType === 'guardian_combat') {
+                letterContent = `
+                    <p>Dearest ${state.name},</p><br>
+                    <p>Thou hast fought courageously as a true ${state.class}! Over the past two years, we have faced our own real-life obstacles and challenges. Yet through every storm, thy strength and courage have stood strong alongside mine.</p><br>
+                    <p>No shadow or obstacle can ever dim the bond we share. Thank thee for two incredible years of strength, bravery, and standing by my side through it all.</p>
+                `;
+            } else if (state.endingType === 'dragon_combat') {
+                letterContent = `
+                    <p>Dearest ${state.name},</p><br>
+                    <p>Thou hast scaled the highest peaks and faced the fiercest dragon! Thy passion and determination make every day with thee feel like a thrilling, legendary adventure.</p><br>
+                    <p>These two years have been nothing short of extraordinary with thee. I look forward to climbing every mountain and conquering every sky together in the years to come.</p>
+                `;
+            }
+
+            letterContent += `
+                <br><p>Happy 2nd Anniversary, my love! Forever and always thine,</p>
+                <div class="signature">With all my love,<br>~ Jomskie</div>
+            `;
+
+            letterBox.innerHTML = letterContent;
+        }
+    </script>
+</body>
+</html>
